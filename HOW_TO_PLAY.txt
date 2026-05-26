@@ -40,6 +40,8 @@ Pilot Duel
   roll targeting the pilot suffers -3.
 - Weapon Specialty: Once per battle, make an enhanced Strike with the pilot's
   named weapon at +2 attack and 2 damage on a hit. It can consume Maneuver setup.
+- Nanite Repair: Once while damaged, activate self-repair. A mixed roll restores
+  1 damage slot; a clean success restores 2; a consequence restores none.
 - Phantasm: Activate your once-per-battle divine ability.
 
 2 on 2
@@ -47,7 +49,7 @@ Pilot Duel
 - Select 2 on 2 at the top of the simulation screen.
 - Select two different Team Echo pilots and two different opponents from one team.
 - Use Formation Strike, Tactical Shift, Aegis Cover, Evasive Vector, Weapon
-  Specialty, and Resonance as in Team Battle.
+  Specialty, Nanite Repair, and Resonance as in Team Battle.
 - Win by disabling both opposing Frames before both Echo Frames are disabled.
 
 Team Battle
@@ -64,6 +66,8 @@ Team Battle
 - Weapon Specialty: Once per pilot, make an enhanced Formation Strike using
   that pilot's named weapon at +2 attack and 2 damage on a hit. It can consume
   Tactical Shift setup and prepared defenses apply against it.
+- Nanite Repair: Once per pilot while damaged. A mixed roll restores 1 damage
+  slot; a clean success restores 2; a consequence restores none.
 - Resonance: Use the selected Echo pilot's once-per-battle Phantasm.
 - Win by disabling every Frame in the opposing force.
 

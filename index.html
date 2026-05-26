@@ -132,6 +132,7 @@
             <span><b>Guard 8+</b> Next defense +3 or +5</span>
             <span><b>Evasive Vector 13+</b> Incoming Strike -3</span>
             <span><b>Weapon Specialty</b> Once // +2 attack // 2 damage</span>
+            <span><b>Nanite Repair</b> Once // Mixed -1 damage // Success -2</span>
             <span><b>Damage 10</b> Destroyed</span>
           </div>
           <div class="actions" id="actions">
@@ -141,6 +142,7 @@
             <button class="action hidden" data-action="guard">Guard</button>
             <button class="action hidden" data-action="evade">Evasive Vector</button>
             <button class="action hidden" data-action="specialty">Weapon Specialty</button>
+            <button class="action hidden" data-action="repair">Nanite Repair</button>
             <button class="action phantasm hidden" data-action="phantasm">Phantasm</button>
           </div>
         </section>
@@ -230,6 +232,7 @@
             <span><b>Aegis Cover 13+</b> +5 next defense roll</span>
             <span><b>Evasive Vector 13+</b> Incoming Strike -3</span>
             <span><b>Weapon Specialty</b> Once // +2 attack // 2 damage</span>
+            <span><b>Nanite Repair</b> Once // Mixed -1 damage // Success -2</span>
             <span><b>Damage 10</b> Frame disabled</span>
           </div>
           <div class="team-targeting hidden" id="duoTargeting">
@@ -247,6 +250,7 @@
             <button class="duo-action action hidden" data-duo-action="guard">Aegis Cover</button>
             <button class="duo-action action hidden" data-duo-action="evade">Evasive Vector</button>
             <button class="duo-action action hidden" data-duo-action="specialty">Weapon Specialty</button>
+            <button class="duo-action action hidden" data-duo-action="repair">Nanite Repair</button>
             <button class="duo-action action phantasm hidden" data-duo-action="phantasm">Resonance</button>
           </div>
         </section>
@@ -319,6 +323,7 @@
             <span><b>Aegis Cover 13+</b> +5 next defense roll</span>
             <span><b>Evasive Vector 13+</b> Incoming Strike -3</span>
             <span><b>Weapon Specialty</b> Once // +2 attack // 2 damage</span>
+            <span><b>Nanite Repair</b> Once // Mixed -1 damage // Success -2</span>
             <span><b>Damage 10</b> Frame disabled</span>
             <span><b>Victory</b> Disable entire enemy unit</span>
           </div>
@@ -337,6 +342,7 @@
             <button class="team-action action hidden" data-team-action="guard">Aegis Cover</button>
             <button class="team-action action hidden" data-team-action="evade">Evasive Vector</button>
             <button class="team-action action hidden" data-team-action="specialty">Weapon Specialty</button>
+            <button class="team-action action hidden" data-team-action="repair">Nanite Repair</button>
             <button class="team-action action phantasm hidden" data-team-action="phantasm">Resonance</button>
           </div>
         </section>
@@ -363,6 +369,7 @@
             <p><b>d20 Outcomes</b> 1-7 consequence; 8-14 mixed result; 15-20 clean success.</p>
             <p><b>Sync Initiative</b> Gain +1 initiative per started 20% sync. Authority units at 110% gain +6.</p>
             <p><b>Damage Track</b> Each pilot has 10 damage: 1-3 minor strain; 4-6 major damage; 7-9 near-critical; 10 disabled.</p>
+            <p><b>Nanite Repair</b> Once per pilot when damaged: 1-7 repairs nothing; 8-14 restores 1 damage slot; 15-20 restores 2.</p>
           </section>
 
           <section class="rule-card">
@@ -374,6 +381,7 @@
               <li><b>Guard</b> On 8-14 gain +3 defense; on 15+ gain +5 defense.</li>
               <li><b>Evasive Vector</b> On 13+, the next incoming Strike is made at -3.</li>
               <li><b>Weapon Specialty</b> Once per battle; make an enhanced Strike with the pilot's weapon at +2 and deal 2 damage on a hit. It can use Maneuver setup.</li>
+              <li><b>Nanite Repair</b> Once while damaged; restore up to 2 damage slots according to the d20 result.</li>
               <li><b>Phantasm</b> Once per battle; success inflicts damage.</li>
             </ul>
           </section>
@@ -387,6 +395,7 @@
               <li><b>Aegis Cover</b> On 13+, grants +5 on that pilot's next defense.</li>
               <li><b>Evasive Vector</b> On 13+, the next Formation Strike aimed at that pilot is made at -3.</li>
               <li><b>Weapon Specialty</b> Once per pilot; make an enhanced Formation Strike with their weapon at +2 and deal 2 damage on a hit. It can use Tactical Shift setup.</li>
+              <li><b>Nanite Repair</b> Once per pilot while damaged; restore damage slots using the shared repair roll.</li>
               <li><b>Resonance</b> Once per pilot per battle.</li>
             </ul>
           </section>
@@ -394,7 +403,7 @@
           <section class="rule-card">
             <h3>Team Battle</h3>
             <p>Four Echo pilots versus a full opposing formation. The highest sync-modified roll leads each unit; disable the entire rival force to win.</p>
-            <p>Use the same actions as 2 on 2. Weapon Specialty and Resonance are each available once per pilot; tactical and defensive bonuses remain until an applicable attack consumes them.</p>
+            <p>Use the same actions as 2 on 2. Weapon Specialty, Nanite Repair, and Resonance are each available once per pilot; tactical and defensive bonuses remain until an applicable attack consumes them.</p>
           </section>
         </div>
       </details>

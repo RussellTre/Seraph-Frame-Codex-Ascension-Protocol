@@ -747,9 +747,10 @@ button:disabled {
 }
 
 #log,
+#duoLog,
 #teamLog {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: 10px;
   max-height: 233px;
   overflow-y: auto;
@@ -759,6 +760,7 @@ button:disabled {
 }
 
 #log li,
+#duoLog li,
 #teamLog li {
   padding: 10px 12px;
   border-left: 2px solid var(--line-bright);
@@ -769,6 +771,7 @@ button:disabled {
 }
 
 #log li strong,
+#duoLog li strong,
 #teamLog li strong {
   color: var(--gold);
 }

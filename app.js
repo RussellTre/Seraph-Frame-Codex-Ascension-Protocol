@@ -632,6 +632,7 @@ function createCombatant(template) {
     damage: 0,
     phantasmUsed: false,
     weaponSpecialtyUsed: false,
+    naniteRepairUsed: false,
     advantage: 0,
     strikeDamageBonus: 0,
     guard: 0,
@@ -701,10 +702,15 @@ function formatRoll(roll) {
   return `${roll.natural} ${sign}${roll.modifier} = ${roll.total} (${roll.band.label})`;
 }
 
-function addLog(message) {
+function appendCombatLog(destination, message) {
   const item = document.createElement("li");
   item.innerHTML = message;
-  elements.log.append(item);
+  destination.append(item);
+  destination.scrollTop = destination.scrollHeight;
+}
+
+function addLog(message) {
+  appendCombatLog(elements.log, message);
 }
 
 function damageState(combatant, disabledLabel = "Frame destroyed") {
@@ -723,6 +729,7 @@ function statusFor(combatant) {
   if (combatant.guard) temporary.push(`guard +${combatant.guard} defense`);
   if (combatant.evasionPenalty) temporary.push(`evasion: incoming Strike -${combatant.evasionPenalty}`);
   if (combatant.weaponSpecialtyUsed) temporary.push("weapon specialty spent");
+  if (combatant.naniteRepairUsed) temporary.push("nanite repair spent");
   if (combatant.exposed) temporary.push("exposed");
   if (combatant.disruption) temporary.push("resonance unstable");
   return temporary.length ? `${status} // ${temporary.join(" // ")}` : status;
@@ -757,11 +764,14 @@ function renderBattle() {
   elements.turnLabel.textContent = state.over ? "Record sealed" : state.phase === "initiative" ? "Awaiting launch" : state.turn === "player" ? "Your action" : "Rival action";
   const phantasmButton = elements.actionButtons.find((button) => button.dataset.action === "phantasm");
   const specialtyButton = elements.actionButtons.find((button) => button.dataset.action === "specialty");
+  const repairButton = elements.actionButtons.find((button) => button.dataset.action === "repair");
   const playerCanAct = state.phase === "combat" && state.turn === "player" && !state.over;
   phantasmButton.disabled = !playerCanAct || state.player.phantasmUsed || state.player.damage >= CRITICAL_DAMAGE;
   phantasmButton.textContent = state.player.phantasmUsed ? "Phantasm Used" : "Phantasm";
   specialtyButton.disabled = !playerCanAct || state.player.weaponSpecialtyUsed;
   specialtyButton.textContent = state.player.weaponSpecialtyUsed ? "Specialty Spent" : "Weapon Specialty";
+  repairButton.disabled = !playerCanAct || state.player.naniteRepairUsed || state.player.damage === 0;
+  repairButton.textContent = state.player.naniteRepairUsed ? "Repair Spent" : "Nanite Repair";
 }
 
 function startPilotEngagement() {
@@ -913,6 +923,19 @@ function attemptEvasiveVector(actor, writeLog) {
   }
 }
 
+function resolveNaniteRepair(actor, writeLog) {
+  actor.naniteRepairUsed = true;
+  const roll = rollD20(penalties(actor));
+  const restored = Math.min(actor.damage, roll.band.rank);
+  consumeTurnEffects(actor);
+  if (!restored) {
+    writeLog(`<strong>Nanite Repair stalled.</strong> ${actor.name} rolls ${formatRoll(roll)}. Self-repair matrices cannot restore a damage slot.`);
+    return;
+  }
+  actor.damage -= restored;
+  writeLog(`<strong>Nanite Repair engaged.</strong> ${actor.name} rolls ${formatRoll(roll)} and restores ${restored} damage slot${restored === 1 ? "" : "s"} (${actor.damage}/${MAX_DAMAGE} damage remaining).`);
+}
+
 function resolvePhantasm(attacker, defender, isPlayer) {
   attacker.phantasmUsed = true;
   const roll = rollD20(penalties(attacker));
@@ -939,6 +962,7 @@ function playerAction(action) {
   if (action === "guard") playerGuard();
   if (action === "evade") attemptEvasiveVector(state.player, addLog);
   if (action === "specialty") resolveWeaponSpecialty(state.player, state.enemy, true);
+  if (action === "repair") resolveNaniteRepair(state.player, addLog);
   if (action === "phantasm") resolvePhantasm(state.player, state.enemy, true);
   if (state.over) return;
   state.turn = "enemy";
@@ -952,7 +976,12 @@ function enemyTurn() {
   const shouldManifest = !state.enemy.phantasmUsed
     && state.enemy.damage < CRITICAL_DAMAGE
     && (state.enemy.damage >= MAJOR_DAMAGE || Math.random() < 0.17);
-  if (shouldManifest) {
+  const shouldRepair = !state.enemy.naniteRepairUsed
+    && state.enemy.damage > 0
+    && (state.enemy.damage >= MAJOR_DAMAGE || Math.random() < 0.18);
+  if (shouldRepair) {
+    resolveNaniteRepair(state.enemy, addLog);
+  } else if (shouldManifest) {
     resolvePhantasm(state.enemy, state.player, false);
   } else if (!state.enemy.weaponSpecialtyUsed && Math.random() < 0.22) {
     resolveWeaponSpecialty(state.enemy, state.player, false);
@@ -977,9 +1006,7 @@ function finishBattle(playerWon) {
 }
 
 function addTeamLog(message) {
-  const item = document.createElement("li");
-  item.innerHTML = message;
-  elements.teamLog.append(item);
+  appendCombatLog(elements.teamLog, message);
 }
 
 function livingUnits(units) {
@@ -998,6 +1025,7 @@ function teamEffectsMarkup(unit) {
   if (unit.teamDefenseBonus) effects.push(`Defense +${unit.teamDefenseBonus}`);
   if (unit.evasionPenalty) effects.push(`Incoming Strike -${unit.evasionPenalty}`);
   if (unit.weaponSpecialtyUsed) effects.push("Specialty Spent");
+  if (unit.naniteRepairUsed) effects.push("Repair Spent");
   if (unit.exposed) effects.push("Exposed");
   if (unit.disruption) effects.push("Disrupted");
   return effects.length ? `<p class="unit-effects">${effects.join(" // ")}</p>` : "";
@@ -1058,11 +1086,14 @@ function renderTeamBattle() {
   elements.teamActionButtons.forEach((button) => button.disabled = !canAct);
   const resonanceButton = elements.teamActionButtons.find((button) => button.dataset.teamAction === "phantasm");
   const specialtyButton = elements.teamActionButtons.find((button) => button.dataset.teamAction === "specialty");
+  const repairButton = elements.teamActionButtons.find((button) => button.dataset.teamAction === "repair");
   const actor = canAct ? selectedTeamActor() : null;
   resonanceButton.disabled = !actor || actor.phantasmUsed || actor.damage >= CRITICAL_DAMAGE;
   resonanceButton.textContent = actor && actor.phantasmUsed ? "Resonance Spent" : "Resonance";
   specialtyButton.disabled = !actor || actor.weaponSpecialtyUsed;
   specialtyButton.textContent = actor && actor.weaponSpecialtyUsed ? "Specialty Spent" : "Weapon Specialty";
+  repairButton.disabled = !actor || actor.naniteRepairUsed || actor.damage === 0;
+  repairButton.textContent = actor && actor.naniteRepairUsed ? "Repair Spent" : "Nanite Repair";
 }
 
 function startTeamEngagement() {
@@ -1204,6 +1235,7 @@ function teamPlayerAction(action) {
   if (action === "guard") teamAegisCover(actor);
   if (action === "evade") attemptEvasiveVector(actor, addTeamLog);
   if (action === "specialty") resolveTeamWeaponSpecialty(actor, target, true);
+  if (action === "repair") resolveNaniteRepair(actor, addTeamLog);
   if (action === "phantasm") resolveTeamResonance(actor, target, true);
   if (teamState.over) return;
   teamState.turn = "enemy";
@@ -1218,7 +1250,10 @@ function enemyTeamTurn() {
   const attacker = enemyUnits[Math.floor(Math.random() * enemyUnits.length)];
   const target = echoUnits[Math.floor(Math.random() * echoUnits.length)];
   const useTechnique = !attacker.phantasmUsed && attacker.damage < CRITICAL_DAMAGE && (attacker.damage >= MAJOR_DAMAGE || Math.random() < 0.15);
-  if (useTechnique) {
+  const useRepair = !attacker.naniteRepairUsed && attacker.damage > 0 && (attacker.damage >= MAJOR_DAMAGE || Math.random() < 0.18);
+  if (useRepair) {
+    resolveNaniteRepair(attacker, addTeamLog);
+  } else if (useTechnique) {
     resolveTeamResonance(attacker, target, false);
   } else if (!attacker.weaponSpecialtyUsed && Math.random() < 0.2) {
     resolveTeamWeaponSpecialty(attacker, target, false);
@@ -1250,9 +1285,7 @@ function resetTeamEngagement() {
 }
 
 function addDuoLog(message) {
-  const item = document.createElement("li");
-  item.innerHTML = message;
-  elements.duoLog.append(item);
+  appendCombatLog(elements.duoLog, message);
 }
 
 function populateDuoTargets() {
@@ -1296,11 +1329,14 @@ function renderDuoBattle() {
   elements.duoActionButtons.forEach((button) => button.disabled = !canAct);
   const resonanceButton = elements.duoActionButtons.find((button) => button.dataset.duoAction === "phantasm");
   const specialtyButton = elements.duoActionButtons.find((button) => button.dataset.duoAction === "specialty");
+  const repairButton = elements.duoActionButtons.find((button) => button.dataset.duoAction === "repair");
   const actor = canAct ? selectedDuoActor() : null;
   resonanceButton.disabled = !actor || actor.phantasmUsed || actor.damage >= CRITICAL_DAMAGE;
   resonanceButton.textContent = actor && actor.phantasmUsed ? "Resonance Spent" : "Resonance";
   specialtyButton.disabled = !actor || actor.weaponSpecialtyUsed;
   specialtyButton.textContent = actor && actor.weaponSpecialtyUsed ? "Specialty Spent" : "Weapon Specialty";
+  repairButton.disabled = !actor || actor.naniteRepairUsed || actor.damage === 0;
+  repairButton.textContent = actor && actor.naniteRepairUsed ? "Repair Spent" : "Nanite Repair";
 }
 
 function startDuoEngagement() {
@@ -1438,6 +1474,7 @@ function duoPlayerAction(action) {
   if (action === "guard") duoAegisCover(actor);
   if (action === "evade") attemptEvasiveVector(actor, addDuoLog);
   if (action === "specialty") resolveDuoWeaponSpecialty(actor, target, true);
+  if (action === "repair") resolveNaniteRepair(actor, addDuoLog);
   if (action === "phantasm") resolveDuoResonance(actor, target, true);
   if (duoState.over) return;
   duoState.turn = "enemy";
@@ -1452,7 +1489,10 @@ function enemyDuoTurn() {
   const attacker = enemyUnits[Math.floor(Math.random() * enemyUnits.length)];
   const target = echoUnits[Math.floor(Math.random() * echoUnits.length)];
   const useTechnique = !attacker.phantasmUsed && attacker.damage < CRITICAL_DAMAGE && (attacker.damage >= MAJOR_DAMAGE || Math.random() < 0.15);
-  if (useTechnique) {
+  const useRepair = !attacker.naniteRepairUsed && attacker.damage > 0 && (attacker.damage >= MAJOR_DAMAGE || Math.random() < 0.18);
+  if (useRepair) {
+    resolveNaniteRepair(attacker, addDuoLog);
+  } else if (useTechnique) {
     resolveDuoResonance(attacker, target, false);
   } else if (!attacker.weaponSpecialtyUsed && Math.random() < 0.2) {
     resolveDuoWeaponSpecialty(attacker, target, false);
