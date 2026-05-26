@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Seraph Frame: Ascension Protocol</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="stars" aria-hidden="true"></div>
+    <header class="masthead" aria-label="Seraph Frame Ascension Protocol banner">
+      <div>
+        <p class="classification">VALKYRIE INSTITUTE // ECHO-PRIME COMBAT ARCHIVE</p>
+        <h1>Seraph Frame <span>Ascension Protocol</span></h1>
+      </div>
+      <p class="continuity">Continuity: Arc II active // Operation Veilfall pending</p>
+    </header>
+
+    <main class="layout">
+      <section class="play-area">
+        <nav class="mode-switch panel" aria-label="Combat mode">
+          <button class="mode-button active" data-mode="duel">Pilot Duel</button>
+          <button class="mode-button" data-mode="duo">2 on 2</button>
+          <button class="mode-button" data-mode="team">Team Battle</button>
+        </nav>
+
+      <section class="setup-panel panel" id="setupPanel">
+        <div class="section-heading">
+          <p class="eyebrow">Simulation Setup</p>
+          <h2>Choose Your Seraph Frame Pilot</h2>
+          <p>A one-on-one training encounter observed by the Seraph Authority.</p>
+        </div>
+
+        <fieldset>
+          <legend>Team Echo Pilot</legend>
+          <div class="choice-grid" id="pilotChoices"></div>
+        </fieldset>
+
+        <label class="select-row roster-filter" for="rivalTeamChoice">
+          <span>Opponent Division</span>
+          <select id="rivalTeamChoice"></select>
+        </label>
+
+        <fieldset class="custom-opponent hidden" id="customOpponentPanel">
+          <legend>Create Future Event Opponent</legend>
+          <div class="custom-grid">
+            <label class="field">
+              <span>Opponent Name</span>
+              <input id="customName" type="text" maxlength="50" placeholder="New rival pilot" required>
+            </label>
+            <label class="field">
+              <span>Affiliation</span>
+              <input id="customTeam" type="text" maxlength="40" placeholder="Rogue Seraph Unit">
+            </label>
+            <label class="field">
+              <span>Sync Percentage</span>
+              <div class="sync-entry">
+                <input id="customSync" type="number" min="0" max="100" value="75" required>
+                <span>%</span>
+              </div>
+            </label>
+            <label class="field">
+              <span>Frame / Class</span>
+              <input id="customFrame" type="text" maxlength="50" placeholder="Unknown Combat Frame">
+            </label>
+            <label class="field full">
+              <span>Weapon Specialty</span>
+              <input id="customWeapon" type="text" maxlength="60" placeholder="Experimental martial weapon">
+            </label>
+            <label class="field full">
+              <span>Signature Technique</span>
+              <input id="customTechnique" type="text" maxlength="60" placeholder="Resonance Surge">
+            </label>
+          </div>
+          <p class="form-note">Sync grants an initiative bonus: +1 for each started 20% of synchronization.</p>
+        </fieldset>
+
+        <fieldset class="rival-fieldset">
+          <legend id="rivalLegend">Rival Pilot</legend>
+          <div class="choice-grid compact" id="rivalChoices"></div>
+        </fieldset>
+
+        <label class="select-row" for="arenaChoice">
+          <span>Arena</span>
+          <select id="arenaChoice"></select>
+        </label>
+
+        <button class="primary" id="startButton">Begin Seraph Frame Pilot Engagement</button>
+      </section>
+
+      <section class="battle-panel hidden" id="battlePanel" aria-live="polite">
+        <div class="battle-header panel">
+          <div>
+            <p class="eyebrow">Active Simulation</p>
+            <h2 id="arenaTitle">Zenith Crucible</h2>
+            <p id="arenaDescription"></p>
+          </div>
+          <div class="phase-box">
+            <span id="phaseLabel">Initiative Required</span>
+            <strong id="turnLabel">Awaiting launch</strong>
+          </div>
+        </div>
+
+        <div class="combatants">
+          <article class="pilot-card panel player" id="playerCard">
+            <p class="team-label">TEAM ECHO</p>
+            <h3 id="playerName"></h3>
+            <p class="sync-profile" id="playerSync"></p>
+            <p class="frame" id="playerFrame"></p>
+            <p class="ability" id="playerAbility"></p>
+            <div class="damage-track" id="playerDamage" aria-label="Player damage track"></div>
+            <p class="status" id="playerStatus"></p>
+          </article>
+
+          <div class="versus">VS</div>
+
+          <article class="pilot-card panel enemy" id="enemyCard">
+            <p class="team-label" id="enemyTeamLabel">OPPONENT</p>
+            <h3 id="enemyName"></h3>
+            <p class="sync-profile" id="enemySync"></p>
+            <p class="frame" id="enemyFrame"></p>
+            <p class="ability" id="enemyAbility"></p>
+            <div class="damage-track" id="enemyDamage" aria-label="Opponent damage track"></div>
+            <p class="status" id="enemyStatus"></p>
+          </article>
+        </div>
+
+        <section class="control-deck panel">
+          <div class="rules-strip">
+            <span><b>Sync</b> Initiative +1 per 20%</span>
+            <span><b>Maneuver 15+</b> Next Strike +3 / +1 damage</span>
+            <span><b>Guard 8+</b> Next defense +3 or +5</span>
+            <span><b>Evasive Vector 13+</b> Incoming Strike -3</span>
+            <span><b>Weapon Specialty</b> Once // +2 attack // 2 damage</span>
+            <span><b>Damage 10</b> Destroyed</span>
+          </div>
+          <div class="actions" id="actions">
+            <button class="primary" id="initiativeButton">Roll Initiative</button>
+            <button class="action hidden" data-action="strike">Strike</button>
+            <button class="action hidden" data-action="maneuver">Maneuver</button>
+            <button class="action hidden" data-action="guard">Guard</button>
+            <button class="action hidden" data-action="evade">Evasive Vector</button>
+            <button class="action hidden" data-action="specialty">Weapon Specialty</button>
+            <button class="action phantasm hidden" data-action="phantasm">Phantasm</button>
+          </div>
+        </section>
+
+        <section class="mission-log panel">
+          <div class="log-heading">
+            <h3>Combat Record</h3>
+            <button class="text-button" id="resetButton">New Seraph Frame Pilot</button>
+          </div>
+          <ol id="log"></ol>
+        </section>
+      </section>
+
+      <section class="team-setup panel hidden" id="duoSetupPanel">
+        <div class="section-heading">
+          <p class="eyebrow">Paired Simulation</p>
+          <h2>Deploy an Echo Pair</h2>
+          <p>Select two Team Echo pilots against two rivals from one opposing team.</p>
+        </div>
+
+        <fieldset>
+          <legend>Echo Pair</legend>
+          <div class="pair-selectors">
+            <label for="duoPilotOneChoice">Pilot One
+              <select id="duoPilotOneChoice"></select>
+            </label>
+            <label for="duoPilotTwoChoice">Pilot Two
+              <select id="duoPilotTwoChoice"></select>
+            </label>
+          </div>
+          <div class="deployment-grid pair-preview" id="duoEchoPreview"></div>
+        </fieldset>
+
+        <label class="select-row" for="duoRivalTeamChoice">
+          <span>Opposing Team</span>
+          <select id="duoRivalTeamChoice"></select>
+        </label>
+
+        <div class="pair-selectors">
+          <label for="duoEnemyOneChoice">Opponent One
+            <select id="duoEnemyOneChoice"></select>
+          </label>
+          <label for="duoEnemyTwoChoice">Opponent Two
+            <select id="duoEnemyTwoChoice"></select>
+          </label>
+        </div>
+        <div class="deployment-grid pair-preview enemy-preview" id="duoEnemyPreview"></div>
+
+        <label class="select-row" for="duoArenaChoice">
+          <span>Arena</span>
+          <select id="duoArenaChoice"></select>
+        </label>
+
+        <p class="form-note">Paired initiative uses the highest sync-modified initiative roll from each two-pilot unit.</p>
+        <button class="primary" id="startDuoButton">Begin Paired Engagement</button>
+      </section>
+
+      <section class="team-battle hidden" id="duoBattlePanel" aria-live="polite">
+        <div class="battle-header panel">
+          <div>
+            <p class="eyebrow">Paired Engagement</p>
+            <h2 id="duoArenaTitle">Zenith Crucible</h2>
+            <p id="duoArenaDescription"></p>
+          </div>
+          <div class="phase-box">
+            <span id="duoPhaseLabel">Initiative Required</span>
+            <strong id="duoTurnLabel">Awaiting deployment</strong>
+          </div>
+        </div>
+
+        <div class="squad-field">
+          <article class="squad-panel compact-panel panel player">
+            <p class="team-label">TEAM ECHO // PAIRED UNIT</p>
+            <div class="squad-roster" id="duoPlayerRoster"></div>
+          </article>
+          <div class="versus">VS</div>
+          <article class="squad-panel compact-panel panel enemy">
+            <p class="team-label" id="duoEnemyLabel">OPPOSING PAIR</p>
+            <div class="squad-roster" id="duoEnemyRoster"></div>
+          </article>
+        </div>
+
+        <section class="control-deck panel">
+          <div class="rules-strip">
+            <span><b>Sync</b> Initiative +1 per 20%</span>
+            <span><b>Tactical Shift</b> +3 next Formation Strike</span>
+            <span><b>Aegis Cover 13+</b> +5 next defense roll</span>
+            <span><b>Evasive Vector 13+</b> Incoming Strike -3</span>
+            <span><b>Weapon Specialty</b> Once // +2 attack // 2 damage</span>
+            <span><b>Damage 10</b> Frame disabled</span>
+          </div>
+          <div class="team-targeting hidden" id="duoTargeting">
+            <label for="duoActorChoice">Acting Pilot
+              <select id="duoActorChoice"></select>
+            </label>
+            <label for="duoTargetChoice">Target
+              <select id="duoTargetChoice"></select>
+            </label>
+          </div>
+          <div class="actions" id="duoActions">
+            <button class="primary" id="duoInitiativeButton">Roll Pair Initiative</button>
+            <button class="duo-action action hidden" data-duo-action="strike">Formation Strike</button>
+            <button class="duo-action action hidden" data-duo-action="maneuver">Tactical Shift</button>
+            <button class="duo-action action hidden" data-duo-action="guard">Aegis Cover</button>
+            <button class="duo-action action hidden" data-duo-action="evade">Evasive Vector</button>
+            <button class="duo-action action hidden" data-duo-action="specialty">Weapon Specialty</button>
+            <button class="duo-action action phantasm hidden" data-duo-action="phantasm">Resonance</button>
+          </div>
+        </section>
+
+        <section class="mission-log panel">
+          <div class="log-heading">
+            <h3>Paired Combat Record</h3>
+            <button class="text-button" id="resetDuoButton">New Pairing</button>
+          </div>
+          <ol id="duoLog"></ol>
+        </section>
+      </section>
+
+      <section class="team-setup panel hidden" id="teamSetupPanel">
+        <div class="section-heading">
+          <p class="eyebrow">Squad Simulation</p>
+          <h2>Deploy Team Echo</h2>
+          <p>Command the full ascended unit in a formation battle against a rival division or Authority strike force.</p>
+        </div>
+
+        <fieldset>
+          <legend>Echo Deployment</legend>
+          <div class="deployment-grid" id="teamEchoPreview"></div>
+        </fieldset>
+
+        <label class="select-row" for="teamRivalChoice">
+          <span>Opposing Force</span>
+          <select id="teamRivalChoice"></select>
+        </label>
+
+        <div class="deployment-grid enemy-preview" id="teamEnemyPreview"></div>
+
+        <label class="select-row" for="teamArenaChoice">
+          <span>Arena</span>
+          <select id="teamArenaChoice"></select>
+        </label>
+
+        <button class="primary" id="startTeamButton">Begin Team Engagement</button>
+      </section>
+
+      <section class="team-battle hidden" id="teamBattlePanel" aria-live="polite">
+        <div class="battle-header panel">
+          <div>
+            <p class="eyebrow">Squad Engagement</p>
+            <h2 id="teamArenaTitle">Zenith Crucible</h2>
+            <p id="teamArenaDescription"></p>
+          </div>
+          <div class="phase-box">
+            <span id="teamPhaseLabel">Initiative Required</span>
+            <strong id="teamTurnLabel">Awaiting deployment</strong>
+          </div>
+        </div>
+
+        <div class="squad-field">
+          <article class="squad-panel panel player">
+            <p class="team-label">TEAM ECHO // FULL ASCENSION</p>
+            <div class="squad-roster" id="teamPlayerRoster"></div>
+          </article>
+          <div class="versus">VS</div>
+          <article class="squad-panel panel enemy">
+            <p class="team-label" id="teamEnemyLabel">OPPOSING FORCE</p>
+            <div class="squad-roster" id="teamEnemyRoster"></div>
+          </article>
+        </div>
+
+        <section class="control-deck panel">
+          <div class="rules-strip">
+            <span><b>Sync</b> Initiative +1 per 20%</span>
+            <span><b>Tactical Shift</b> +3 next Formation Strike</span>
+            <span><b>Aegis Cover 13+</b> +5 next defense roll</span>
+            <span><b>Evasive Vector 13+</b> Incoming Strike -3</span>
+            <span><b>Weapon Specialty</b> Once // +2 attack // 2 damage</span>
+            <span><b>Damage 10</b> Frame disabled</span>
+            <span><b>Victory</b> Disable entire enemy unit</span>
+          </div>
+          <div class="team-targeting hidden" id="teamTargeting">
+            <label for="teamActorChoice">Acting Pilot
+              <select id="teamActorChoice"></select>
+            </label>
+            <label for="teamTargetChoice">Target
+              <select id="teamTargetChoice"></select>
+            </label>
+          </div>
+          <div class="actions" id="teamActions">
+            <button class="primary" id="teamInitiativeButton">Roll Team Initiative</button>
+            <button class="team-action action hidden" data-team-action="strike">Formation Strike</button>
+            <button class="team-action action hidden" data-team-action="maneuver">Tactical Shift</button>
+            <button class="team-action action hidden" data-team-action="guard">Aegis Cover</button>
+            <button class="team-action action hidden" data-team-action="evade">Evasive Vector</button>
+            <button class="team-action action hidden" data-team-action="specialty">Weapon Specialty</button>
+            <button class="team-action action phantasm hidden" data-team-action="phantasm">Resonance</button>
+          </div>
+        </section>
+
+        <section class="mission-log panel">
+          <div class="log-heading">
+            <h3>Squad Combat Record</h3>
+            <button class="text-button" id="resetTeamButton">New Engagement</button>
+          </div>
+          <ol id="teamLog"></ol>
+        </section>
+      </section>
+      </section>
+
+      <details class="codex-panel panel" id="codexPanel" open>
+        <summary>
+          <span class="eyebrow">Codex Brief</span>
+          <strong>Combat Engagement Rules</strong>
+          <span class="summary-toggle">Expand</span>
+        </summary>
+        <div class="codex-content">
+          <section class="rule-card">
+            <h3>Shared Rules</h3>
+            <p><b>d20 Outcomes</b> 1-7 consequence; 8-14 mixed result; 15-20 clean success.</p>
+            <p><b>Sync Initiative</b> Gain +1 initiative per started 20% sync. Authority units at 110% gain +6.</p>
+            <p><b>Damage Track</b> Each pilot has 10 damage: 1-3 minor strain; 4-6 major damage; 7-9 near-critical; 10 disabled.</p>
+          </section>
+
+          <section class="rule-card">
+            <h3>Pilot Duel</h3>
+            <p>One Echo pilot versus one rival. Win by dealing 10 damage first.</p>
+            <ul class="rule-list">
+              <li><b>Strike</b> Opposed attack roll; consumes prepared Maneuver power.</li>
+              <li><b>Maneuver</b> On 15+, next Strike gains +3 attack and +1 damage.</li>
+              <li><b>Guard</b> On 8-14 gain +3 defense; on 15+ gain +5 defense.</li>
+              <li><b>Evasive Vector</b> On 13+, the next incoming Strike is made at -3.</li>
+              <li><b>Weapon Specialty</b> Once per battle; make an enhanced Strike with the pilot's weapon at +2 and deal 2 damage on a hit. It can use Maneuver setup.</li>
+              <li><b>Phantasm</b> Once per battle; success inflicts damage.</li>
+            </ul>
+          </section>
+
+          <section class="rule-card">
+            <h3>2 on 2</h3>
+            <p>Two Echo pilots versus two rivals from one team. The highest sync-modified roll leads each pair; disable both opposing Frames to win.</p>
+            <ul class="rule-list">
+              <li><b>Formation Strike</b> The acting pilot attacks the selected target.</li>
+              <li><b>Tactical Shift</b> Grants +3 on that pilot's next Formation Strike.</li>
+              <li><b>Aegis Cover</b> On 13+, grants +5 on that pilot's next defense.</li>
+              <li><b>Evasive Vector</b> On 13+, the next Formation Strike aimed at that pilot is made at -3.</li>
+              <li><b>Weapon Specialty</b> Once per pilot; make an enhanced Formation Strike with their weapon at +2 and deal 2 damage on a hit. It can use Tactical Shift setup.</li>
+              <li><b>Resonance</b> Once per pilot per battle.</li>
+            </ul>
+          </section>
+
+          <section class="rule-card">
+            <h3>Team Battle</h3>
+            <p>Four Echo pilots versus a full opposing formation. The highest sync-modified roll leads each unit; disable the entire rival force to win.</p>
+            <p>Use the same actions as 2 on 2. Weapon Specialty and Resonance are each available once per pilot; tactical and defensive bonuses remain until an applicable attack consumes them.</p>
+          </section>
+        </div>
+      </details>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

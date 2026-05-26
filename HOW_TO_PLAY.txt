@@ -1,0 +1,79 @@
+SERAPH FRAME: ASCENSION PROTOCOL
+Quick Start
+
+1. Extract this zip file to a folder.
+2. Double-click index.html.
+3. Your web browser will open the app.
+4. Choose a Team Echo pilot, an opponent division and rival, and an arena.
+   Select Custom Future Opponent to enter a new rival and sync percentage.
+5. Click Begin Seraph Frame Pilot Engagement and roll initiative.
+
+No installation or internet connection is required.
+
+Controls
+
+Damage Levels
+
+- Every pilot has a 10-point damage track.
+- Damage 1-3: Minor strain; defensive reaction rolls suffer -1.
+- Damage 4-6: Major damage; all rolls suffer -1.
+- Damage 7-9: Near-critical; all rolls suffer -2 and Phantasm/Resonance is unavailable.
+- Damage 10: The Frame is destroyed or disabled.
+
+Initiative and Sync
+
+- Initiative rolls gain +1 for each started 20% of the pilot's sync level.
+- Examples: 70% Sync grants +4; 85% Sync grants +5; 100% Sync grants +5.
+- Seraph Authority pilots operate at 110% Sync and grant +6 initiative.
+- In paired or team fights, each active pilot rolls initiative with their own
+  sync bonus; the highest modified result leads the formation.
+
+Pilot Duel
+
+- Strike: Attack the opponent with an opposed d20 roll, consuming any empowered
+  strike bonus from a successful Maneuver.
+- Maneuver: On a clean success of 15 or higher, the next Strike gains +3 on
+  its attack roll and deals 2 damage if it hits.
+- Guard: On a mixed result, the next defensive reaction gains +3; on a clean
+  success, the next defensive reaction gains +5.
+- Evasive Vector: On a total of 13 or higher, the next incoming Strike attack
+  roll targeting the pilot suffers -3.
+- Weapon Specialty: Once per battle, make an enhanced Strike with the pilot's
+  named weapon at +2 attack and 2 damage on a hit. It can consume Maneuver setup.
+- Phantasm: Activate your once-per-battle divine ability.
+
+2 on 2
+
+- Select 2 on 2 at the top of the simulation screen.
+- Select two different Team Echo pilots and two different opponents from one team.
+- Use Formation Strike, Tactical Shift, Aegis Cover, Evasive Vector, Weapon
+  Specialty, and Resonance as in Team Battle.
+- Win by disabling both opposing Frames before both Echo Frames are disabled.
+
+Team Battle
+
+- Select Team Battle at the top of the simulation screen.
+- Deploy Team Echo against a rival squad or the Seraph Authority.
+- Choose an acting Echo pilot and target each round.
+- Formation Strike: Direct attack by the selected pilot.
+- Tactical Shift: Grants the acting pilot +3 on their next Formation Strike roll.
+- Aegis Cover: Roll a total of 13 or higher to grant that pilot +5 on their
+  next defensive reaction against an incoming Formation Strike.
+- Evasive Vector: Roll a total of 13 or higher to impose -3 on the next
+  incoming Formation Strike attack roll targeting that pilot.
+- Weapon Specialty: Once per pilot, make an enhanced Formation Strike using
+  that pilot's named weapon at +2 attack and 2 damage on a hit. It can consume
+  Tactical Shift setup and prepared defenses apply against it.
+- Resonance: Use the selected Echo pilot's once-per-battle Phantasm.
+- Win by disabling every Frame in the opposing force.
+
+Dice Outcomes
+
+- 1-7: Failure with consequence.
+- 8-14: Mixed result with a drawback.
+- 15-20: Clean success.
+
+Goal
+
+Reduce the opposing Seraph Frame through ten damage levels before your
+own Frame is destroyed, or disable every opponent in paired and team modes.
